@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
+import { SearchBar, Header } from 'react-native-elements';
 
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 var REQUEST_XML_URL = 'http://www.wsj.com/xml/rss/3_7085.xml';
@@ -39,7 +40,7 @@ var styles = StyleSheet.create({
   listView: {
     paddingTop: 20,
     backgroundColor: '#F5FCFF',
-  }
+  },
 });
 
 
@@ -52,17 +53,24 @@ export default class App extends React.Component {
           rowHasChanged: (row1, row2) => row1 !== row2,
         }),
         loaded: false,
+        text: REQUEST_XML_URL,
+        title: "",
       };
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData(REQUEST_XML_URL);
+  }
+
+  reloadURL(NEW_URL) {
+    //this.setState({loaded: false});
+    this.fetchData(NEW_URL);
   }
   
-  fetchData() {
+  fetchData(URL) {
     const targetURL = 'https://api.rss2json.com/v1/api.json?rss_url=';
     
-    fetch(targetURL + REQUEST_XML_URL)
+    fetch(targetURL + URL)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
@@ -71,6 +79,7 @@ export default class App extends React.Component {
           //movies: responseData.movies,
           dataSource: this.state.dataSource.cloneWithRows(responseData.items),
           loaded: true,
+          title: responseData.feed.title,
         });
       })
       .done();
@@ -84,12 +93,26 @@ export default class App extends React.Component {
     //var movie = this.state.movies[0];
     return (
       //this.renderMovie(movie);
-      <ListView
-        dataSource={this.state.dataSource}
-        //renderRow={this.renderMovie}
-        renderRow={this.renderFeed}
-        style={styles.ListView}
-      />
+      <View>
+        <Header
+          leftComponent={{ icon: 'menu', color: '#fff' }}
+          centerComponent={{ text: this.state.title, style: { color: '#fff' } }}
+          rightComponent={{ icon: 'home', color: '#fff' }}
+        />
+        <SearchBar
+          round
+          onChangeText={(text) => this.setState({text})}
+          onClearText={(text) => this.setState({text})}
+          onEndEditing={ () => this.onPressLearnMore(this.state.text) }
+          placeholder={"Type URL Here..."}
+        />
+        <ListView
+          dataSource={this.state.dataSource}
+          //renderRow={this.renderMovie}
+          renderRow={this.renderFeed}
+          style={styles.ListView}
+        />
+      </View>
     );
   }
 
@@ -97,7 +120,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <Text>
-          Loading movies...
+          Loading Feed...
         </Text>
       </View>
     );
@@ -120,6 +143,11 @@ export default class App extends React.Component {
     );
   }
 
+
+  onPressLearnMore(text) {
+    console.log(text);
+    this.reloadURL(text);
+  }
 
 }
 
