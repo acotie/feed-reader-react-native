@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { SearchBar, Header } from 'react-native-elements';
 
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 var REQUEST_XML_URL = 'http://www.wsj.com/xml/rss/3_7085.xml';
@@ -40,7 +40,7 @@ var styles = StyleSheet.create({
   listView: {
     paddingTop: 20,
     backgroundColor: '#F5FCFF',
-  }
+  },
 });
 
 
@@ -54,6 +54,7 @@ export default class App extends React.Component {
         }),
         loaded: false,
         text: REQUEST_XML_URL,
+        title: "",
       };
   }
 
@@ -78,6 +79,7 @@ export default class App extends React.Component {
           //movies: responseData.movies,
           dataSource: this.state.dataSource.cloneWithRows(responseData.items),
           loaded: true,
+          title: responseData.feed.title,
         });
       })
       .done();
@@ -92,6 +94,11 @@ export default class App extends React.Component {
     return (
       //this.renderMovie(movie);
       <View>
+        <Header
+          leftComponent={{ icon: 'menu', color: '#fff' }}
+          centerComponent={{ text: this.state.title, style: { color: '#fff' } }}
+          rightComponent={{ icon: 'home', color: '#fff' }}
+        />
         <SearchBar
           round
           onChangeText={(text) => this.setState({text})}
