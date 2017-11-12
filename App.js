@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, Button, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
+import { SearchBar } from 'react-native-elements';
 
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 var REQUEST_XML_URL = 'http://www.wsj.com/xml/rss/3_7085.xml';
@@ -91,23 +92,13 @@ export default class App extends React.Component {
     return (
       //this.renderMovie(movie);
       <View>
-        <View style={{flexDirection:'row', width: window.width, margin: 10, padding:4, alignItems:'center', justifyContent:'center', borderWidth:4, borderColor:'#888', borderRadius:10, backgroundColor:'#fff'}}>
-          <View style={{flex:4}}>
-            <TextInput 
-              style={{paddingTop: 5, fontSize: 14}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-          </View>
-          <View style={{flex:1}}>
-            <Button
-              onPress={ () => this.onPressLearnMore(this.state.text) }
-              title="GO"
-              color="#841584"
-              accessibilityLabel="get more another news feed"
-            />
-          </View>
-        </View>
+        <SearchBar
+          round
+          onChangeText={(text) => this.setState({text})}
+          onClearText={(text) => this.setState({text})}
+          onEndEditing={ () => this.onPressLearnMore(this.state.text) }
+          placeholder={"Type URL Here..."}
+        />
         <ListView
           dataSource={this.state.dataSource}
           //renderRow={this.renderMovie}
