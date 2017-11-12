@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, Button, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
 
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 var REQUEST_XML_URL = 'http://www.wsj.com/xml/rss/3_7085.xml';
@@ -52,6 +52,7 @@ export default class App extends React.Component {
           rowHasChanged: (row1, row2) => row1 !== row2,
         }),
         loaded: false,
+        text: "Please Input RSS Feed URL",
       };
   }
 
@@ -84,12 +85,25 @@ export default class App extends React.Component {
     //var movie = this.state.movies[0];
     return (
       //this.renderMovie(movie);
-      <ListView
-        dataSource={this.state.dataSource}
-        //renderRow={this.renderMovie}
-        renderRow={this.renderFeed}
-        style={styles.ListView}
-      />
+      <View>
+        <TextInput 
+          style={{padding: 20, fontSize: 14}}
+          onChangeText={(text) => this.setState({text})}
+          value={this.state.text}
+        />
+        <Button
+          onPress={ () => this.onPressLearnMore(this.state.text) }
+          title="Learn More"
+          color="#841584"
+          accessibilityLabel="Learn more about this purple button"
+        />
+        <ListView
+          dataSource={this.state.dataSource}
+          //renderRow={this.renderMovie}
+          renderRow={this.renderFeed}
+          style={styles.ListView}
+        />
+      </View>
     );
   }
 
@@ -120,6 +134,10 @@ export default class App extends React.Component {
     );
   }
 
+
+  onPressLearnMore(text) {
+    console.log(text);
+  }
 
 }
 
