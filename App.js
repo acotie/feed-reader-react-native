@@ -52,7 +52,7 @@ export default class App extends React.Component {
           rowHasChanged: (row1, row2) => row1 !== row2,
         }),
         loaded: false,
-        text: "Please Input RSS Feed URL",
+        text: REQUEST_XML_URL,
       };
   }
 
@@ -91,17 +91,23 @@ export default class App extends React.Component {
     return (
       //this.renderMovie(movie);
       <View>
-        <TextInput 
-          style={{padding: 30, fontSize: 14}}
-          onChangeText={(text) => this.setState({text})}
-          value={this.state.text}
-        />
-        <Button
-          onPress={ () => this.onPressLearnMore(this.state.text) }
-          title="GO"
-          color="#841584"
-          accessibilityLabel="get more another news feed"
-        />
+        <View style={{flexDirection:'row', width: window.width, margin: 10, padding:4, alignItems:'center', justifyContent:'center', borderWidth:4, borderColor:'#888', borderRadius:10, backgroundColor:'#fff'}}>
+          <View style={{flex:4}}>
+            <TextInput 
+              style={{paddingTop: 5, fontSize: 14}}
+              onChangeText={(text) => this.setState({text})}
+              value={this.state.text}
+            />
+          </View>
+          <View style={{flex:1}}>
+            <Button
+              onPress={ () => this.onPressLearnMore(this.state.text) }
+              title="GO"
+              color="#841584"
+              accessibilityLabel="get more another news feed"
+            />
+          </View>
+        </View>
         <ListView
           dataSource={this.state.dataSource}
           //renderRow={this.renderMovie}
