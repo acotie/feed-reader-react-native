@@ -57,13 +57,18 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData(REQUEST_XML_URL);
+  }
+
+  reloadURL(NEW_URL) {
+    //this.setState({loaded: false});
+    this.fetchData(NEW_URL);
   }
   
-  fetchData() {
+  fetchData(URL) {
     const targetURL = 'https://api.rss2json.com/v1/api.json?rss_url=';
     
-    fetch(targetURL + REQUEST_XML_URL)
+    fetch(targetURL + URL)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
@@ -87,15 +92,15 @@ export default class App extends React.Component {
       //this.renderMovie(movie);
       <View>
         <TextInput 
-          style={{padding: 20, fontSize: 14}}
+          style={{padding: 30, fontSize: 14}}
           onChangeText={(text) => this.setState({text})}
           value={this.state.text}
         />
         <Button
           onPress={ () => this.onPressLearnMore(this.state.text) }
-          title="Learn More"
+          title="GO"
           color="#841584"
-          accessibilityLabel="Learn more about this purple button"
+          accessibilityLabel="get more another news feed"
         />
         <ListView
           dataSource={this.state.dataSource}
@@ -111,7 +116,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <Text>
-          Loading movies...
+          Loading Feed...
         </Text>
       </View>
     );
@@ -137,6 +142,7 @@ export default class App extends React.Component {
 
   onPressLearnMore(text) {
     console.log(text);
+    this.reloadURL(text);
   }
 
 }
