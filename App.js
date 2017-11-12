@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, ListView, View, Image } from 'react-native';
+import { StyleSheet, Text, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
 
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
+var REQUEST_XML_URL = 'http://www.wsj.com/xml/rss/3_7085.xml';
 var MOCKED_MOVIES_DATA = [
     {title: 'Title', year: '2015', posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'}},
     {title: 'Title', year: '2015', posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'}},
@@ -11,25 +12,29 @@ var movie = MOCKED_MOVIES_DATA[0];
 
 var styles = StyleSheet.create({
   container: {
+    paddingTop: 10,
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   thumbnail: {
-    width: 53,
-    height: 81,
+    width: 100,
+    height: 70,
   },
   rightContainer: {
+    paddingLeft: 5,
+    paddingRight:5,
     flex: 1,
   },
   title: {
-    fontSize: 20,
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 16,
+    marginBottom: 4,
+    textAlign: 'left',
   },
-  year: {
-    textAlign: 'center',
+  description: {
+    fontSize: 12,
+    textAlign: 'left',
   },
   listView: {
     paddingTop: 20,
@@ -53,16 +58,18 @@ export default class App extends React.Component {
   componentDidMount() {
     this.fetchData();
   }
-
+  
   fetchData() {
-    fetch(REQUEST_URL)
+    const targetURL = 'https://api.rss2json.com/v1/api.json?rss_url=';
+    
+    fetch(targetURL + REQUEST_XML_URL)
       .then((response) => response.json())
       .then((responseData) => {
-        //console.log(responseData);
+        console.log(responseData);
 
         this.setState({
           //movies: responseData.movies,
-          dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
+          dataSource: this.state.dataSource.cloneWithRows(responseData.items),
           loaded: true,
         });
       })
@@ -79,7 +86,8 @@ export default class App extends React.Component {
       //this.renderMovie(movie);
       <ListView
         dataSource={this.state.dataSource}
-        renderRow={this.renderMovie}
+        //renderRow={this.renderMovie}
+        renderRow={this.renderFeed}
         style={styles.ListView}
       />
     );
@@ -95,20 +103,23 @@ export default class App extends React.Component {
     );
   }
 
-  renderMovie(movie) {
+  renderFeed(item) {
     return (
-      <View style={styles.container}>
-        <Image
-          source={{uri: movie.posters.thumbnail}}
-          style={styles.thumbnail}
-        />
-        <View style={styles.rightContainer}>
-          <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.year}>{movie.year}</Text>
+      <TouchableOpacity onPress={() => {Alert.alert(item.title, item.description)}}>
+        <View style={styles.container}>
+          <Image
+            source={{uri: item.enclosure.link}}
+            style={styles.thumbnail}
+          />
+          <View style={styles.rightContainer}>
+            <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+            <Text style={styles.description} numberOfLines={3}>{item.description}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
+
 
 }
 
