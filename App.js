@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, ListView, View, Image } from 'react-native';
+import { StyleSheet, Text, ListView, View, Image, WebView, TouchableOpacity, Alert } from 'react-native';
 
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 var REQUEST_XML_URL = 'http://www.wsj.com/xml/rss/3_7085.xml';
@@ -58,7 +58,7 @@ export default class App extends React.Component {
   componentDidMount() {
     this.fetchData();
   }
-
+  
   fetchData() {
     const targetURL = 'https://api.rss2json.com/v1/api.json?rss_url=';
     
@@ -105,18 +105,21 @@ export default class App extends React.Component {
 
   renderFeed(item) {
     return (
-      <View style={styles.container}>
-        <Image
-          source={{uri: item.enclosure.link}}
-          style={styles.thumbnail}
-        />
-        <View style={styles.rightContainer}>
-          <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-          <Text style={styles.description} numberOfLines={3}>{item.description}</Text>
+      <TouchableOpacity onPress={() => {Alert.alert(item.title, item.description)}}>
+        <View style={styles.container}>
+          <Image
+            source={{uri: item.enclosure.link}}
+            style={styles.thumbnail}
+          />
+          <View style={styles.rightContainer}>
+            <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+            <Text style={styles.description} numberOfLines={3}>{item.description}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
+
 
 }
 
